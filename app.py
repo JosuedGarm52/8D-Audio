@@ -94,6 +94,15 @@ def convert():
 
     return Response(process_audio(url), mimetype='text/plain')
 
+@app.route("/download")
+def download_effectz():
+    return send_file(
+        "out/effectz.wav",
+        as_attachment=True,
+        download_name="effectz.wav",
+        mimetype="audio/wav"
+    )
+
 
 if __name__ == '__main__':
     try:

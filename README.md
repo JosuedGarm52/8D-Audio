@@ -12,7 +12,7 @@ This is a **modernized version** of the original [8D-Audio by maxgillham](https:
 You can compare both versions here:
 
 - [Original version by maxgillham](https://github.com/maxgillham/8D-Audio)
-- [Modernized version](https://github.com/yourusername/8D-Audio)
+- [Modernized version](https://github.com/JosuedGarm52/8D-Audio)
 
 
 ## APP
@@ -40,7 +40,7 @@ Unlike the original version of this project, this fork has been updated to:
 
 ### 1. Clone the repository  
 ```bash
-git clone https://github.com/yourusername/8D-Audio.git
+git clone https://github.com/JosuedGarm52/8D-Audio.git
 cd 8D-Audio
 ```
 
