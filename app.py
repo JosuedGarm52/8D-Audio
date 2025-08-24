@@ -1,8 +1,7 @@
 import logging
-from flask import Flask, render_template, Response, request, send_file, jsonify
+from flask import Flask, render_template, Response, request, send_file
 from pathlib import Path
 import json
-import traceback
 
 # Intentar importar dependencias críticas
 MISSING_DEPENDENCIES = []
@@ -14,7 +13,7 @@ except ImportError as e:
 # Configuración de logging
 LOG_FILE = "app.log"
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.WARNING,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
         logging.FileHandler(LOG_FILE, encoding="utf-8"),
@@ -89,8 +88,7 @@ def convert():
             yield json.dumps({"success": True, "logs": logs})
 
         except Exception as e:
-            # Log completo para consola
-            print(traceback.format_exc())
+            logging.error(f"Error procesando {url}: {e}", exc_info=True)
             # Enviar solo el mensaje resumido al cliente
             yield json.dumps({"success": False, "error": str(e)})
 
