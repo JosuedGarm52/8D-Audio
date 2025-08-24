@@ -85,7 +85,7 @@ def add_effects(input_path, output_path="out/effectz.wav"):
     tfm = sox.Transformer()
 
     # Ejemplo de efectos (puedes ajustar a tu gusto)
-    tfm.reverb(reverberance=50, damping=50, room_scale=50)
+    tfm.reverb(reverberance=50, room_scale=50)
     tfm.bass(gain=5)
     tfm.treble(gain=3)
 
