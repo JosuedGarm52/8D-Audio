@@ -143,6 +143,7 @@ def elevation(wav_mono, tempo, sr):
 # YouTube download
 # ===========================
 def download_from_youtube(url, output_path="out/test"):
+    # Asegurarse de que la carpeta exista
     output_path = os.path.abspath(output_path)
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
@@ -160,5 +161,6 @@ def download_from_youtube(url, output_path="out/test"):
     with YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
-    # Ahora el archivo generado debería ser output_path + ".wav"
-    return output_path + ".wav"
+    # El archivo final será output_path + ".wav"
+    final_file = output_path + ".wav"
+    return final_file
