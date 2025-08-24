@@ -34,14 +34,14 @@ def rotate_left_right(wav_mono, wav_stereo, tempo, sr):
     t = np.arange(length) / sr  # tiempo en segundos
 
     # Frecuencia de oscilación en Hz (ajústala según el ritmo deseado)
-    f = tempo / 60 / 4  # un ciclo cada 1/4 de compás aprox
+    f = tempo / 60 / 8  # un ciclo cada 1/8 de compás aprox
 
     # Generar señal de paneo: varía entre 0 (izq) y 1 (der)
     pan = 0.5 * (1 + np.sin(2 * np.pi * f * t))
 
     # Aplicar al audio
-    wav_stereo[0, :] = wav_mono * (1 - 0.8*pan)  # canal izquierdo
-    wav_stereo[1, :] = wav_mono * (0.8*pan)      # canal derecho
+    wav_stereo[0, :] = wav_mono * (1 - pan)  # canal izquierdo
+    wav_stereo[1, :] = wav_mono * pan      # canal derecho
 
     return wav_stereo
 
