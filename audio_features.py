@@ -98,12 +98,11 @@ def add_effects(input_path, output_path="out/effectz.wav"):
     except TypeError as e:
         logging.warning(f"Bass: {e}")
 
-    # Treble (igual que bass)
+    # Treble
     try:
-        tfm.treble(gain=3)
+        tfm.treble(gain_db=3)
     except TypeError as e:
-        logging.warning(f"Treble: {e}")
-        tfm.treble()
+        logging.warning(f"No se pudo aplicar treble: {e}")
 
     # Exportar
     input_path = Path(input_path)
