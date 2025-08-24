@@ -95,14 +95,6 @@ function done() {
 function showErrorModal(message) {
     $("#error-message").text(message);
     $("#error-modal").css("display","flex");
-    
-    // Ocultar controles de audio y botones de conversión
-    $("#after_convert").hide();
-    $("#before_convert").hide();
-    $("#max").hide();
-    $("#spinner").hide();
-    $(".input").hide();
-    $("#convert").hide();
 }
 
 // Cerrar modal con botón
@@ -120,4 +112,11 @@ $(window).click(function(event) {
     if ($(event.target).is("#error-modal")) {
         $("#error-modal").fadeOut();
     }
+});
+
+// Botón de ejemplo
+$("#sample").click(function() {
+    const sampleLink = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+    $(".input").val(sampleLink);
+    $("#convert").click(); // activa la conversión automáticamente
 });

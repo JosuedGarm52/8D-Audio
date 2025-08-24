@@ -2,6 +2,8 @@ import logging
 from flask import Flask, render_template, Response, request, send_file, jsonify
 from pathlib import Path
 import os
+import json
+import traceback
 
 # Intentar importar dependencias críticas
 MISSING_DEPENDENCIES = []
@@ -63,36 +65,37 @@ def convert():
     url = request.values.get('url')
 
     def process_audio(url):
+        logs = []
         try:
-            yield "Limpiando directorios...\n"
+            logs.append("Limpiando directorios...")
             clear_directories()
 
-            yield "Descargando audio...\n"
+            logs.append("Descargando audio...")
             download_from_youtube(url)
 
-            yield "Procesando audio...\n"
+            logs.append("Procesando audio...")
             wav_mono, wav_stereo, sampling_rate, tempo, beat_frame = song_features('./out/test.wav')
 
-            yield "Aplicando efecto 8D...\n"
+            logs.append("Aplicando efecto 8D...")
             wav = rotate_left_right(wav_mono, wav_stereo, tempo, sampling_rate)
 
-            yield "Guardando audio...\n"
+            logs.append("Guardando audio...")
             save_song('./out/in.wav', wav, sampling_rate)
 
-            yield "Añadiendo efectos...\n"
+            logs.append("Añadiendo efectos...")
             add_effects('./out/in.wav')
 
-            yield "¡Listo!\n"
+            logs.append("¡Listo!")
+
+            yield json.dumps({"success": True, "logs": logs})
 
         except Exception as e:
-            import traceback, json
-            # Log completo
+            # Log completo para consola
             print(traceback.format_exc())
-            # Solo el mensaje resumido se envía al cliente
-            err_msg = f"Error: {str(e)}"
-            yield json.dumps({"error": err_msg})
+            # Enviar solo el mensaje resumido al cliente
+            yield json.dumps({"success": False, "error": str(e)})
 
-    return Response(process_audio(url), mimetype='application/json')
+    return Response(process_audio(url), mimetype='text/plain')
 
 
 if __name__ == '__main__':
