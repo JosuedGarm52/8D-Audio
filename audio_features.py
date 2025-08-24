@@ -5,6 +5,8 @@ import soundfile as sf
 import sox
 from yt_dlp import YoutubeDL
 from scipy.signal import butter, lfilter
+from config import YDL_OPTIONS
+import os
 
 APP_ROOT = Path(__file__).parent
 OUT_DIR = APP_ROOT / "out"
@@ -140,10 +142,13 @@ def elevation(wav_mono, tempo, sr):
 # ===========================
 # YouTube download
 # ===========================
+def download_from_youtube(url, output_path="out/test"):
+    output_path = os.path.abspath(output_path)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-def download_from_youtube(url, output_path="out/test.wav"):
     ydl_opts = {
-        'outtmpl': output_path,
+        **YDL_OPTIONS,
+        'outtmpl': output_path,  # Sin extensión
         'format': 'bestaudio/best',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
@@ -151,6 +156,9 @@ def download_from_youtube(url, output_path="out/test.wav"):
             'preferredquality': '192',
         }],
     }
+
     with YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
-    return "Done Download"
+
+    # Ahora el archivo generado debería ser output_path + ".wav"
+    return output_path + ".wav"

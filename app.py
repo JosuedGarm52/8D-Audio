@@ -1,7 +1,6 @@
 import logging
 from flask import Flask, render_template, Response, request, send_file, jsonify
 from pathlib import Path
-import os
 import json
 import traceback
 
@@ -71,10 +70,10 @@ def convert():
             clear_directories()
 
             logs.append("Descargando audio...")
-            download_from_youtube(url)
+            wav_file = download_from_youtube(url)
 
             logs.append("Procesando audio...")
-            wav_mono, wav_stereo, sampling_rate, tempo, beat_frame = song_features('./out/test.wav')
+            wav_mono, wav_stereo, sampling_rate, tempo, beat_frame = song_features(wav_file)
 
             logs.append("Aplicando efecto 8D...")
             wav = rotate_left_right(wav_mono, wav_stereo, tempo, sampling_rate)

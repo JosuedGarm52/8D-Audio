@@ -49,7 +49,6 @@ $("#convert").click(function(){
 });
 
 
-
 $("#again").click(function(){
     document.getElementById("playa").load()
     $(".input").css("display","block");
