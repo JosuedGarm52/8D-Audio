@@ -29,68 +29,47 @@ def save_song(file_name, wav, sampling_rate):
     sf.write(file_name, wav.T if wav.ndim==2 else wav, sampling_rate)
 
 def rotate_left_right(wav_mono, wav_stereo, tempo, sr):
-    """Efecto 8D simple, alterna amplitudes en canales izquierdo/derecho."""
+    """Paneo continuo para efecto 8D simple."""
     length = wav_mono.shape[0]
-    end_of_beat = int((tempo / 120) * sr)
-    down_value = 0.15
-    amp_down = np.linspace(1, down_value, 2*end_of_beat)
-    amp_up = np.linspace(down_value, 1, 2*end_of_beat)
-    amp_down_slow = np.linspace(1, down_value, 8*end_of_beat)
-    amp_up_slow = np.linspace(down_value, 1, 8*end_of_beat)
+    t = np.arange(length) / sr  # tiempo en segundos
 
-    left_up, right_up = False, False
-    left_maintain, right_maintain = False, True
-    i = 0
+    # Frecuencia de oscilación en Hz (ajústala según el ritmo deseado)
+    f = tempo / 60 / 4  # un ciclo cada 1/4 de compás aprox
 
-    while i < length - 8*end_of_beat:
-        fast = np.random.choice([True, False])
-        if left_up:
-            if fast:
-                wav_stereo[0, i:i+2*end_of_beat] = wav_mono[i:i+2*end_of_beat]*amp_up
-                wav_stereo[1, i:i+2*end_of_beat] = wav_mono[i:i+2*end_of_beat]*amp_down
-                left_up, left_maintain = False, True
-                i += 2*end_of_beat
-            else:
-                wav_stereo[0, i:i+8*end_of_beat] = wav_mono[i:i+8*end_of_beat]*amp_up_slow
-                wav_stereo[1, i:i+8*end_of_beat] = wav_mono[i:i+8*end_of_beat]*amp_down_slow
-                left_up, left_maintain = False, True
-                i += 8*end_of_beat
-        elif right_up:
-            if fast:
-                wav_stereo[1, i:i+2*end_of_beat] = wav_mono[i:i+2*end_of_beat]*amp_up
-                wav_stereo[0, i:i+2*end_of_beat] = wav_mono[i:i+2*end_of_beat]*amp_down
-                right_up, right_maintain = False, True
-                i += 2*end_of_beat
-            else:
-                wav_stereo[1, i:i+8*end_of_beat] = wav_mono[i:i+8*end_of_beat]*amp_up_slow
-                wav_stereo[0, i:i+8*end_of_beat] = wav_mono[i:i+8*end_of_beat]*amp_down_slow
-                right_up, right_maintain = False, True
-                i += 8*end_of_beat
-        elif left_maintain:
-            wav_stereo[0, i:i+end_of_beat] = wav_mono[i:i+end_of_beat]
-            wav_stereo[1, i:i+end_of_beat] = wav_mono[i:i+end_of_beat]*down_value
-            right_up, left_maintain = True, False
-            i += end_of_beat
-        elif right_maintain:
-            wav_stereo[1, i:i+end_of_beat] = wav_mono[i:i+end_of_beat]
-            wav_stereo[0, i:i+end_of_beat] = wav_mono[i:i+end_of_beat]*down_value
-            right_maintain, left_up = False, True
-            i += end_of_beat
+    # Generar señal de paneo: varía entre 0 (izq) y 1 (der)
+    pan = 0.5 * (1 + np.sin(2 * np.pi * f * t))
 
-    # silenciar final incompleto
-    wav_stereo[0, (length//(8*end_of_beat))*(8*end_of_beat):] *= 0
-    wav_stereo[1, (length//(8*end_of_beat))*(8*end_of_beat):] *= 0
+    # Aplicar al audio
+    wav_stereo[0, :] = wav_mono * (1 - 0.8*pan)  # canal izquierdo
+    wav_stereo[1, :] = wav_mono * (0.8*pan)      # canal derecho
+
     return wav_stereo
 
 def add_effects(input_path, output_path="out/effectz.wav"):
-    waveform, sr = torchaudio.load(input_path)
-    
-    # Ejemplo: normalizar
-    waveform = waveform / waveform.abs().max()
-    
-    # Guardar
-    torchaudio.save(output_path, waveform, sr)
-    return output_path
+    # Cargar audio
+    waveform, sr = torchaudio.load(input_path)  # [canales, samples]
+
+    # Mantener estéreo y normalizar volumen
+    max_val = waveform.abs().max()
+    if max_val > 0:
+        waveform = waveform / max_val  # normalización
+
+    # Ejemplo opcional: añadir un pequeño reverb "simulado"
+    # solo mezcla ligera entre canales para reforzar efecto 3D
+    if waveform.shape[0] == 2:  # stereo
+        left, right = waveform
+        mix = 0.02  # mezcla mínima de un canal al otro
+        waveform[0] = left * (1 - mix) + right * mix
+        waveform[1] = right * (1 - mix) + left * mix
+
+    # Crear carpeta si no existe
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Guardar audio final
+    torchaudio.save(str(output_path), waveform, sr)
+    return str(output_path)
+
 
 # ===========================
 # Filtros y elevación
