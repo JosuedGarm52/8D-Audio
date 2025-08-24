@@ -30,6 +30,7 @@ six>=1.16.0
 # YouTube descarga (yt-dlp en vez de youtube-dl que está muerto)
 yt-dlp>=2024.3.10
 
-# Procesamiento de audio con Sox (Python wrapper)
-sox==1.5.0
+# Procesamiento de audio
+torch>=2.1.0
+torchaudio>=2.1.0
 

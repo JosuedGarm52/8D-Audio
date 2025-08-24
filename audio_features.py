@@ -2,7 +2,7 @@ import numpy as np
 from pathlib import Path
 import librosa
 import soundfile as sf
-import sox
+import torchaudio
 from yt_dlp import YoutubeDL
 from scipy.signal import butter, lfilter
 from config import YDL_OPTIONS
@@ -83,34 +83,14 @@ def rotate_left_right(wav_mono, wav_stereo, tempo, sr):
     return wav_stereo
 
 def add_effects(input_path, output_path="out/effectz.wav"):
-    tfm = sox.Transformer()
-
-    # Reverb (sin parámetros que puedan fallar)
-    try:
-        tfm.reverb(reverberance=50, room_scale=50)
-    except TypeError as e:
-        logging.warning(f"Reverb: {e}")
-        tfm.reverb()  # solo parámetros válidos por seguridad
-
-    # Bass
-    try:
-        tfm.bass(gain=5)
-    except TypeError as e:
-        logging.warning(f"Bass: {e}")
-
-    # Treble
-    try:
-        tfm.treble(gain_db=3)
-    except TypeError as e:
-        logging.warning(f"No se pudo aplicar treble: {e}")
-
-    # Exportar
-    input_path = Path(input_path)
-    output_path = Path(output_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    tfm.build(str(input_path), str(output_path))
-    return str(output_path)
+    waveform, sr = torchaudio.load(input_path)
+    
+    # Ejemplo: normalizar
+    waveform = waveform / waveform.abs().max()
+    
+    # Guardar
+    torchaudio.save(output_path, waveform, sr)
+    return output_path
 
 # ===========================
 # Filtros y elevación
