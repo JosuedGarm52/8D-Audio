@@ -98,6 +98,8 @@ def convert():
 if __name__ == '__main__':
     try:
         logging.info("Iniciando servidor Flask...")
-        app.run(debug=True)
+        app.run(debug=True, threaded=False)
+    except KeyboardInterrupt:
+        logging.info("Servidor detenido por usuario (Ctrl+C)")
     except Exception as e:
         logging.exception("Error crítico al iniciar Flask")

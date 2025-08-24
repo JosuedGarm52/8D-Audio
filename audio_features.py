@@ -7,6 +7,7 @@ from yt_dlp import YoutubeDL
 from scipy.signal import butter, lfilter
 from config import YDL_OPTIONS
 import os
+import logging
 
 APP_ROOT = Path(__file__).parent
 OUT_DIR = APP_ROOT / "out"
@@ -84,10 +85,25 @@ def rotate_left_right(wav_mono, wav_stereo, tempo, sr):
 def add_effects(input_path, output_path="out/effectz.wav"):
     tfm = sox.Transformer()
 
-    # Ejemplo de efectos (puedes ajustar a tu gusto)
-    tfm.reverb(reverberance=50, room_scale=50)
-    tfm.bass(gain=5)
-    tfm.treble(gain=3)
+    # Reverb (sin parámetros que puedan fallar)
+    try:
+        tfm.reverb(reverberance=50, room_scale=50)
+    except TypeError as e:
+        logging.warning(f"Reverb: {e}")
+        tfm.reverb()  # solo parámetros válidos por seguridad
+
+    # Bass
+    try:
+        tfm.bass(gain=5)
+    except TypeError as e:
+        logging.warning(f"Bass: {e}")
+
+    # Treble (igual que bass)
+    try:
+        tfm.treble(gain=3)
+    except TypeError as e:
+        logging.warning(f"Treble: {e}")
+        tfm.treble()
 
     # Exportar
     input_path = Path(input_path)
