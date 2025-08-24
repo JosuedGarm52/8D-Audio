@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8D Audio</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='musica.png') }}">
+
+    <!-- CSS externo -->
+    <link rel="stylesheet" href="/static/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-jLKHWMz1T0Un9Yz+0PShhZ3eGQgz+4a+l9D9h2G6P7c4Fh/bcBv8YlLVvW9wR4Hv" crossorigin="anonymous">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="loading">
+        <div id="spinner"></div>
+    </div>
+    <!-- Modal de éxito -->
+    <div id="success-modal">
+        <i class="fas fa-check-circle"></i> Conversion Complete!
+    </div>
+
+    <!-- Modal de error -->
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="error-icon">❌</div>
+            <h2>Error</h2>
+            <p id="error-message">Aquí se mostrará el error</p>
+            <button id="close-error">Close</button>
+        </div>
+    </div>
+
+    <div id="fork" class="animated fadeIn" style="animation-delay:3.4s;">
+        <i class="fab fa-github"></i>&nbsp; Fork it on GitHub
+    </div>
+
+    <div class="container animated fadeIn" style="animation-delay:3.5s;">
+        <div class="logo">8D <b>A</b>UDIO</div>
+
+        <!-- Antes de convertir -->
+        <div id="before_convert">
+            <input type="text" class="input" placeholder="Paste YouTube link here">
+            <button class="button" id="convert">Convert</button>
+            <h4 id="error"></h4>
+            <div id="spinner" class="lds-ripple"><div></div><div></div></div>
+        </div>
+
+        <!-- Después de convertir -->
+        <div id="after_convert">
+            <audio id="playa" controls preload="none" src="/out/effectz.wav"></audio>
+            <br><br>
+            <button class="button" id="again">Try Another?</button>
+        </div>
+    </div>
+
+    <div id="foot" class="animated fadeIn">
+        Edit: <a href="https://github.com/JosuedGarm52" target="_blank">@josuedgarm52</a> | 
+        Development: <a href="https://github.com/maxgillham" target="_blank">@maxgillham</a> | 
+        Design: <a href="https://github.com/imfunniee" target="_blank">@imfunny</a>
+    </div>
+
+    <!-- JS externo -->
+    <script src="/static/index.js"></script>
+</body>
+</html>
